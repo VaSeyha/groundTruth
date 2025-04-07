@@ -29,10 +29,16 @@ def extract_coordinates(json_data):
         for obj in objects:
             if obj.get("type") == "path" and "path" in obj:
                 for point in obj["path"]:
-                    if isinstance(point, list) and len(point) >= 3:
-                        _, x, y = point[:3]
-                        if isinstance(x, (int, float)) and isinstance(y, (int, float)):
-                            temp_list.extend([x, y])
+                    if isinstance(point, list):
+                        cmd = point[0]
+                        coords = point[1:]
+
+                        # Process coordinates in pairs (x, y)
+                        for i in range(0, len(coords), 2):
+                            if i + 1 < len(coords):
+                                x, y = coords[i], coords[i + 1]
+                                if isinstance(x, (int, float)) and isinstance(y, (int, float)):
+                                    temp_list.extend([x, y])
         
         while len(temp_list) >= 16:
             nested_coords.append(temp_list[:16])
@@ -127,8 +133,8 @@ if nested_coords:
         output = model(tensor_data)
         prediction = torch.argmax(output, dim=1).cpu().numpy()
 
-    st.subheader("Model Output")
-    st.write("Raw Scores (logits):", output)
+    # st.subheader("Model Output")
+    # st.write("Raw Scores (logits):", output)
     st.write("Prediction:", prediction)
 else:
     st.write("")
