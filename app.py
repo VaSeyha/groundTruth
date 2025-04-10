@@ -44,9 +44,8 @@ def extract_coordinates(json_data):
             nested_coords.append(temp_list[:16])
             temp_list = temp_list[16:]
 
-        if temp_list:
-            temp_list.extend([0] * (16 - len(temp_list)))
-            nested_coords.append(temp_list)
+        
+        nested_coords.append(temp_list)
 
     return nested_coords
 
@@ -70,6 +69,10 @@ def scale_coordinates(nested_coords):
     while len(normalized) >= 16:
         normalized_data.append(normalized[:16])
         normalized = normalized[16:]
+    
+    if normalized:
+        normalized.extend([0] * (16 - len(normalized)))
+        nested_coords.append(normalized)
 
     return normalized_data
 
